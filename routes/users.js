@@ -25,9 +25,15 @@ router.post('/signup', function(req, res, next) {
         })
         .spread(function(result, created) {
             if (created) {
-                res.send('User successfully created');
+                res.json({
+                    staus: 200,
+                    message: 'User successfully created'
+                });
             } else {
-                res.send('This user already exists');
+                res.json({
+                    staus: 401,
+                    message: 'This user already exists'
+                });
             }
         });
 });
@@ -48,13 +54,27 @@ router.post('/login', function(req, res, next) {
         }
         if (user) {
             let token = authService.signUser(user);
-            res.cookie('jwt', token);
-            res.send('Login successful');
+            res.json({
+                    status: 200,
+                    message: 'Login Successful!',
+                    jwt: token
+                })
+                // res.cookie('jwt', token);
+                // res.send('Login successful');
         } else {
             console.log('Wrong password');
-            res.redirect('login')
+            res.send('Try login again with correct information')
         }
     });
+});
+
+router.get('/logout', function(req, res, next) {
+    res.cookie('jwt', "", { expires: new Date(0) });
+    res.json({
+        status: 'Logout Successful',
+        message: 'Hope to see you again soon!'
+    })
+
 });
 
 module.exports = router;
