@@ -5,4 +5,7 @@ module.exports = function(models) {
     models.posts.belongsTo(models.users, {
         foreignKey: 'UserId'
     });
+    // models.comments.belongsTo(models.users, {
+    //     foreignKey: 'UserId'
+    // });
 }

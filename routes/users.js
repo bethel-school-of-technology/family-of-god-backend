@@ -3,13 +3,11 @@ var router = express.Router();
 var models = require('../models')
 const authService = require("../services/auth");
 
-
-/* GET users listing. */
 router.get('/', function(req, res, next) {
     res.send('respond with a resource');
 });
 
-// Create new user if one doesn't exist
+// Create new user //
 router.post('/signup', function(req, res, next) {
     models.users
         .findOrCreate({
@@ -20,7 +18,8 @@ router.post('/signup', function(req, res, next) {
                 FirstName: req.body.firstName,
                 LastName: req.body.lastName,
                 Email: req.body.email,
-                Password: req.body.password
+                // Password: req.body.password
+                Password: authService.hashPassword(req.body.password)
             }
         })
         .spread(function(result, created) {
@@ -55,14 +54,12 @@ router.post('/login', function(req, res, next) {
         if (user) {
             let token = authService.signUser(user);
             res.json({
-                    status: 200,
-                    message: 'Login Successful!',
-                    jwt: token
-                })
-                // res.cookie('jwt', token);
-                // res.send('Login successful');
+                status: 200,
+                message: 'Login Successful!',
+                jwt: token
+            })
         } else {
-            console.log('Wrong password');
+            console.log('Email and Password did not match our records');
             res.send('Try login again with correct information')
         }
     });

@@ -69,53 +69,36 @@ router.post("/newpost", function(req, res, next) {
         res.send('Must be logged in');
     }
 });
-router.post("/deletepost/:id", function(req, res, next) {
-    let token = req.cookies.jwt;
-    if (token) {
-        authService.verifyUser(token)
-            .then(user => {
-                if (user) {
-                    models.posts
-                        .update({
-                            Deleted: true
-                        }, {
-                            where: { PostId: req.params.id }
-                        })
-                        .then(result => res.redirect("/users/profile"));
-                } else {
-                    res.send("Token invalid")
-                }
-            });
-    } else {
-        res.status(401);
-        res.send('Must be logged in');
-    }
-});
+router.put('/:id', (req, res) => {
+    let token = req.cookies.token;
+    authService.verifyUser(token).then(user => {
 
-router.put("/editpost/:id", function(req, res, next) {
-    let token = req.cookies.jwt;
-    if (token) {
-        authService.verifyUser(token)
-            .then(user => {
-                if (user) {
-                    models.posts
-                        .update({
-                            PostTitle: req.body.postTitle,
-                            PostBody: req.body.postBody,
-                        }, {
-                            where: { PostId: PostId }
-                        })
-                    res.render("posts")
-                        .then(result => res.redirect("/users/profile"));
-                } else {
-                    res.send("Token invalid")
-                }
-            });
-    } else {
-        res.status(401);
-        res.send('Must be logged in');
-    }
-});
+        if (user == null) {
+            return res.json({ message: "User not logged in." })
+        }
+        models.posts.update(req.body.postBody, { where: { id: parseInt(req.params.id), ownedBy: user.id } })
+            .then(result => res.json({ message: "Post has been updated!" }))
+            .catch(err => {
+                res.status(400);
+                res.json({ message: "There was an error updating the post!" })
+            })
+    });
+})
 
+router.delete('/:id', (req, res) => {
+    let token = req.cookies.token;
+    authService.verifyUser(token).then(user => {
+
+        if (user == null) {
+            return res.json({ message: "User not logged in." })
+        }
+        models.posts.destroy({ where: { id: parseInt(req.params.id), ownedBy: user.id } })
+            .then(result => res.json({ message: "Post has been deleted!" }))
+            .catch(err => {
+                res.status(400);
+                res.json({ message: "There was an error deleting the post!" })
+            })
+    });
+});
 
 module.exports = router;
