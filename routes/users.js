@@ -25,12 +25,12 @@ router.post('/signup', function(req, res, next) {
         .spread(function(result, created) {
             if (created) {
                 res.json({
-                    staus: 200,
+                    status: 200,
                     message: 'User successfully created'
                 });
             } else {
                 res.json({
-                    staus: 401,
+                    status: 401,
                     message: 'This user already exists'
                 });
             }
