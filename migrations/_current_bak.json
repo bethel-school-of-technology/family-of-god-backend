@@ -3,22 +3,11 @@
         "comments": {
             "tableName": "comments",
             "schema": {
-                "id": {
+                "UserId": {
+                    "autoIncrement": true,
                     "allowNull": false,
                     "primaryKey": true,
-                    "autoIncrement": true,
-                    "field": "id",
-                    "seqType": "Sequelize.INTEGER"
-                },
-                "UserId": {
                     "field": "UserId",
-                    "allowNull": true,
-                    "references": {
-                        "model": "users",
-                        "key": "UserId"
-                    },
-                    "onDelete": "NO ACTION",
-                    "onUpdate": "CASCADE",
                     "seqType": "Sequelize.INTEGER"
                 },
                 "CommentBody": {
@@ -144,5 +133,5 @@
             "indexes": []
         }
     },
-    "revision": 5
+    "revision": 6
 }
