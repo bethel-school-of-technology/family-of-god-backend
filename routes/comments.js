@@ -2,25 +2,26 @@ var express = require('express');
 var router = express.Router();
 var models = require('../models');
 var authService = require('../services/auth');
-const comments = require('../models/comments');
 const bcrypt = require("bcryptjs");
+console.log(models.comments)
 
-router.get("/", function(req, res, next) {
-    res.send('comments');
-});
+// router.get("/", function(req, res, next) {
+//     res.send('comments');
+// });
 
 ///Get comment for single Users///
 router.get("/", function(req, res, next) {
     let token = req.cookies.jwt;
+    console.log(token);
     if (token) {
         authService.verifyUser(token)
-            .then(comment => {
+            .then(user => {
                 if (user) {
                     models.comments
                         .findAll({
                             where: { UserId: user.UserId, Deleted: false }
                         })
-                        .then(result => res.render("commented", { comments: result }));
+                        .then(result => res.json({ comments: result }));
                 } else {
                     res.status(401);
                     res.send('Invalid authentication token');
@@ -32,7 +33,7 @@ router.get("/", function(req, res, next) {
     }
 });
 
-router.post("/newcomment", function(req, res, next) {
+router.post("/newcomment/:postId", function(req, res, next) {
     let token = req.cookies.jwt;
     if (token) {
         authService.verifyUser(token)
@@ -41,6 +42,10 @@ router.post("/newcomment", function(req, res, next) {
                     models.comments.findOrCreate({
                             where: {
                                 UserId: user.UserId,
+                                PostId: req.params.postId,
+                                CommentBody: req.body.commentBody
+                            },
+                            defaults: {
                                 CommentBody: req.body.commentBody
                             }
                         })

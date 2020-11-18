@@ -10,14 +10,19 @@ module.exports = (sequelize, DataTypes) => {
         }
     };
     comments.init({
-        PostId: {
+        CommentId: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
             allowNull: false,
             primaryKey: true
         },
         CommentBody: DataTypes.STRING,
-        UserId: DataTypes.INTEGER
+        UserId: DataTypes.INTEGER,
+        PostId: DataTypes.INTEGER,
+        Deleted: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false,
+        },
     }, {
         sequelize,
         modelName: 'comments',

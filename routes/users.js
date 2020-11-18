@@ -18,8 +18,8 @@ router.post('/signup', function(req, res, next) {
                 FirstName: req.body.firstName,
                 LastName: req.body.lastName,
                 Email: req.body.email,
-                // Password: req.body.password
-                Password: authService.hashPassword(req.body.password)
+                Password: req.body.password
+                    // Password: authService.hashPassword(req.body.password)
             }
         })
         .spread(function(result, created) {
@@ -53,10 +53,12 @@ router.post('/login', function(req, res, next) {
         }
         if (user) {
             let token = authService.signUser(user);
+            res.cookie("jwt", token)
             res.json({
                 status: 200,
                 message: 'Login Successful!',
-                jwt: token
+                // jwt: token
+
             })
         } else {
             console.log('Email and Password did not match our records');

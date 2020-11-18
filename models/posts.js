@@ -18,7 +18,11 @@ module.exports = (sequelize, DataTypes) => {
         },
         PostTitle: DataTypes.STRING,
         PostBody: DataTypes.STRING,
-        UserId: DataTypes.INTEGER
+        UserId: DataTypes.INTEGER,
+        Deleted: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false,
+        },
     }, {
         sequelize,
         modelName: 'posts',

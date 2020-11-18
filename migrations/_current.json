@@ -3,11 +3,11 @@
         "comments": {
             "tableName": "comments",
             "schema": {
-                "PostId": {
+                "CommentId": {
                     "autoIncrement": true,
                     "allowNull": false,
                     "primaryKey": true,
-                    "field": "PostId",
+                    "field": "CommentId",
                     "seqType": "Sequelize.INTEGER"
                 },
                 "CommentBody": {
@@ -17,6 +17,24 @@
                 "UserId": {
                     "field": "UserId",
                     "seqType": "Sequelize.INTEGER"
+                },
+                "PostId": {
+                    "field": "PostId",
+                    "allowNull": true,
+                    "references": {
+                        "model": "posts",
+                        "key": "PostId"
+                    },
+                    "onDelete": "NO ACTION",
+                    "onUpdate": "CASCADE",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "Deleted": {
+                    "defaultValue": {
+                        "value": false
+                    },
+                    "field": "Deleted",
+                    "seqType": "Sequelize.BOOLEAN"
                 },
                 "createdAt": {
                     "allowNull": false,
@@ -59,6 +77,13 @@
                     "onDelete": "CASCADE",
                     "onUpdate": "CASCADE",
                     "seqType": "Sequelize.INTEGER"
+                },
+                "Deleted": {
+                    "defaultValue": {
+                        "value": false
+                    },
+                    "field": "Deleted",
+                    "seqType": "Sequelize.BOOLEAN"
                 },
                 "createdAt": {
                     "allowNull": false,
@@ -137,5 +162,5 @@
             "indexes": []
         }
     },
-    "revision": 7
+    "revision": 9
 }

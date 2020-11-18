@@ -2,27 +2,22 @@ var express = require('express');
 var router = express.Router();
 var models = require('../models');
 var authService = require('../services/auth');
-const posts = require('../models/posts');
 const bcrypt = require("bcryptjs");
 
-
-///Get Posts for all Users///
-router.get("/", function(req, res, next) {
-    res.send('posts');
-});
 
 ///Get post for single Users///
 router.get("/", function(req, res, next) {
     let token = req.cookies.jwt;
+    console.log(token)
     if (token) {
         authService.verifyUser(token)
-            .then(post => {
+            .then(user => {
                 if (user) {
                     models.posts
                         .findAll({
                             where: { UserId: user.UserId, Deleted: false }
                         })
-                        .then(result => res.render("posted", { posts: result }));
+                        .then(result => res.json({ posts: result }));
                 } else {
                     res.status(401);
                     res.send('Invalid authentication token');
@@ -70,13 +65,13 @@ router.post("/newpost", function(req, res, next) {
     }
 });
 router.put('/:id', (req, res) => {
-    let token = req.cookies.token;
+    let token = req.cookies.jwt;
     authService.verifyUser(token).then(user => {
 
         if (user == null) {
             return res.json({ message: "User not logged in." })
         }
-        models.posts.update(req.body.postBody, { where: { id: parseInt(req.params.id), ownedBy: user.id } })
+        models.posts.update(req.body, { where: { PostId: parseInt(req.params.id) } })
             .then(result => res.json({ message: "Post has been updated!" }))
             .catch(err => {
                 res.status(400);
@@ -86,13 +81,13 @@ router.put('/:id', (req, res) => {
 })
 
 router.delete('/:id', (req, res) => {
-    let token = req.cookies.token;
+    let token = req.cookies.jwt;
     authService.verifyUser(token).then(user => {
 
         if (user == null) {
             return res.json({ message: "User not logged in." })
         }
-        models.posts.destroy({ where: { id: parseInt(req.params.id), ownedBy: user.id } })
+        models.posts.update({ Deleted: true }, { where: { PostId: parseInt(req.params.id) } })
             .then(result => res.json({ message: "Post has been deleted!" }))
             .catch(err => {
                 res.status(400);

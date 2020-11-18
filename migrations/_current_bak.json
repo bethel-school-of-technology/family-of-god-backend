@@ -3,16 +3,24 @@
         "comments": {
             "tableName": "comments",
             "schema": {
-                "UserId": {
+                "CommentId": {
                     "autoIncrement": true,
                     "allowNull": false,
                     "primaryKey": true,
-                    "field": "UserId",
+                    "field": "CommentId",
                     "seqType": "Sequelize.INTEGER"
                 },
                 "CommentBody": {
                     "field": "CommentBody",
                     "seqType": "Sequelize.STRING"
+                },
+                "UserId": {
+                    "field": "UserId",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "PostId": {
+                    "field": "PostId",
+                    "seqType": "Sequelize.INTEGER"
                 },
                 "createdAt": {
                     "allowNull": false,
@@ -133,5 +141,5 @@
             "indexes": []
         }
     },
-    "revision": 6
+    "revision": 8
 }
