@@ -18,8 +18,8 @@ router.post('/signup', function(req, res, next) {
                 FirstName: req.body.firstName,
                 LastName: req.body.lastName,
                 Email: req.body.email,
-                Password: req.body.password
-                    // Password: authService.hashPassword(req.body.password)
+                // Password: req.body.password
+                Password: authService.hashPassword(req.body.password)
             }
         })
         .spread(function(result, created) {
@@ -42,7 +42,7 @@ router.post('/login', function(req, res, next) {
     models.users.findOne({
         where: {
             Username: req.body.username,
-            Password: req.body.password
+            // Password: req.body.password
         }
     }).then(user => {
         if (!user) {
@@ -52,6 +52,7 @@ router.post('/login', function(req, res, next) {
             });
         }
         if (user) {
+            if (authService.comparePasswords());
             let token = authService.signUser(user);
             res.cookie("jwt", token)
             res.json({

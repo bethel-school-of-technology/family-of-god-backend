@@ -2,14 +2,14 @@ module.exports = function(models) {
     models.users.hasMany(models.posts, {
         foreignKey: 'UserId'
     });
-    models.posts.belongsTo(models.users, {
+    models.prayerrequest.belongsTo(models.users, {
         foreignKey: 'UserId'
     });
-    models.comments.belongsTo(models.posts, {
-        foreignKey: 'PostId'
+    models.comments.belongsTo(models.prayerrequest, {
+        foreignKey: 'PrayerRequestId'
     });
-    models.posts.hasMany(models.comments, {
-        foreignKey: 'PostId'
+    models.prayerrequest.hasMany(models.comments, {
+        foreignKey: 'PrayerRequestId'
     });
     models.users.hasMany(models.comments, {
         foreignKey: 'UserId'
