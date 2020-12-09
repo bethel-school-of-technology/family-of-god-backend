@@ -26,7 +26,7 @@ module.exports = (sequelize, DataTypes) => {
         },
     }, {
         sequelize,
-        modelName: 'prayerRequest',
+        modelName: 'prayerrequest',
     });
     return prayerRequest;
 };

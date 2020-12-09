@@ -31,13 +31,14 @@ router.get("/", function(req, res, next) {
 
 router.post("/newrequest", function(req, res, next) {
     let token = req.cookies.jwt;
+    console.log(req.body)
     if (token) {
         authService.verifyUser(token)
             .then(user => {
                 if (user) {
                     models.prayerrequest.findOrCreate({
                             where: {
-                                PrayerRequestId: user.UserId,
+                                UserId: user.UserId,
                                 PrayerRequestBody: req.body.prayerRequestBody,
                                 PrayerRequestTitle: req.body.prayerRequestTitle
                             }
