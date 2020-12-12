@@ -54,6 +54,7 @@ router.post('/login', function(req, res, next) {
         if (user) {
             // if (authService.comparePasswords());
             let token = authService.signUser(user);
+            console.log(token);
             res.cookie("jwt", token)
             res.json({
                 status: 200,

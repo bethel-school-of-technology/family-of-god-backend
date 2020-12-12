@@ -4,11 +4,25 @@ var models = require('../models');
 var authService = require('../services/auth');
 const bcrypt = require("bcryptjs");
 
+router.get("/all", function(req, res, next) {
+    models.prayerrequest.findAll({
+            where: { Deleted: false }
+        }, {
+            include: [{
+                model: models.users,
+                // attributes: ["Username"]
+            }]
+        })
+        .then(result => {
+            console.log(result);
+            res.json({ prayerrequest: result })
+        });
+})
 
 ///Get post for single Users///
 router.get("/", function(req, res, next) {
-    let token = req.cookies.jwt;
-    console.log(token)
+    let token = req.headers.authorization;
+    console.log(req.headers.authorization)
     if (token) {
         authService.verifyUser(token)
             .then(user => {
@@ -29,9 +43,32 @@ router.get("/", function(req, res, next) {
     }
 });
 
+router.get("/details/:id", function(req, res, next) {
+    let token = req.headers.authorization;
+    console.log(req.headers.authorization)
+    if (token) {
+        authService.verifyUser(token)
+            .then(user => {
+                if (user) {
+                    models.prayerrequest
+                        .findOne({
+                            where: { UserId: user.UserId, Deleted: false, PrayerRequestId: req.params.id }
+                        })
+                        .then(result => res.json({ prayerrequest: result }));
+                } else {
+                    res.status(401);
+                    res.send('Invalid authentication token');
+                }
+            });
+    } else {
+        res.status(401);
+        res.send('Must be logged in');
+    }
+});
+
 router.post("/newrequest", function(req, res, next) {
-    let token = req.cookies.jwt;
-    console.log(req.body)
+    let token = req.headers.authorization;
+    console.log(req.headers)
     if (token) {
         authService.verifyUser(token)
             .then(user => {
@@ -65,8 +102,8 @@ router.post("/newrequest", function(req, res, next) {
         res.send('Must be logged in');
     }
 });
-router.put('/:id', (req, res) => {
-    let token = req.cookies.jwt;
+router.put('/update/:id', (req, res) => {
+    let token = req.headers.authorization;
     authService.verifyUser(token).then(user => {
 
         if (user == null) {
@@ -82,7 +119,7 @@ router.put('/:id', (req, res) => {
 })
 
 router.delete('/:id', (req, res) => {
-    let token = req.cookies.jwt;
+    let token = req.headers.authorization;
     authService.verifyUser(token).then(user => {
 
         if (user == null) {
